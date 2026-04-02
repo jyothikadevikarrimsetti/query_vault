@@ -14,9 +14,9 @@ jobs:
       fail-fast: false
       matrix:
         service:
-          - { dir: "queryvault", image: "queryvault" }
-          - { dir: "xensql", image: "xensql" }
-          - { dir: "dashboard", image: "dashboard" }
+          - { dir: "queryvault", image: "ai_security_v2-queryvault" }
+          - { dir: "xensql", image: "ai_security_v2-xensql" }
+          - { dir: "dashboard", image: "ai_security_v2-dashboard" }
 
     steps:
       - name: Checkout repository
@@ -37,5 +37,5 @@ jobs:
           context: ./${{ matrix.service.dir }}
           push: true
           tags: |
-            jyothikadevikarrimsetti/${{ matrix.service.image }}:latest
-            jyothikadevikarrimsetti/${{ matrix.service.image }}:${{ github.sha }}
+            jyothika2832/${{ matrix.service.image }}:latest
+            jyothika2832/${{ matrix.service.image }}:${{ github.sha }}
