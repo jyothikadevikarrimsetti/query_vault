@@ -1,0 +1,102 @@
+version: "3.9"
+
+services:
+
+  # ── Infrastructure ─────────────────────────────────
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+
+  pgvector:
+    image: pgvector/pgvector:pg16
+    container_name: pgvector
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pgvector_user
+      POSTGRES_PASSWORD: pgvector_pass
+      POSTGRES_DB: vectors
+    volumes:
+      - pgvector_data:/var/lib/postgresql/data
+
+  # ── Target Databases ───────────────────────────────
+
+  target-postgres:
+    image: postgres:15-alpine
+    container_name: target-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sentinelsql
+      POSTGRES_PASSWORD: "1234"
+      POSTGRES_DB: sentinelsql
+    volumes:
+      - target_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sentinelsql"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  target-mysql:
+    image: mysql:8.0
+    container_name: target-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_USER: sentinelsql
+      MYSQL_PASSWORD: "1234"
+      MYSQL_DATABASE: sentinelsql
+      MYSQL_ROOT_PASSWORD: rootpassword
+    volumes:
+      - target_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Application Services ───────────────────────────
+
+  xensql:
+    image: xensql:latest
+    container_name: xensql
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "8900:8900"
+    depends_on:
+      - redis
+      - pgvector
+      - target-postgres
+      - target-mysql
+
+  queryvault:
+    image: queryvault:latest
+    container_name: queryvault
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "8950:8950"
+    depends_on:
+      - xensql
+      - redis
+      - target-postgres
+      - target-mysql
+
+  dashboard:
+    image: dashboard:latest
+    container_name: dashboard
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - xensql
+      - queryvault
+
+volumes:
+  redis_data:
+  pgvector_data:
+  target_pg_data:
+  target_mysql_data:
