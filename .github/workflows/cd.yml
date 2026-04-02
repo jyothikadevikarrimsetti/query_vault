@@ -86,7 +86,7 @@ jobs:
           done
           
           # 4. Replace 'latest' tag with the SHA built in CI across ALL deployment files
-          sed -i "s|jimsonrats/\([a-zA-Z0-9-]*\):latest|jimsonrats/\1:${{ github.event.workflow_run.head_sha }}|g" k8s/*.yaml
+          sed -i "s|jyothikadevikarrimsetti/\([a-zA-Z0-9-]*\):latest|jyothikadevikarrimsetti/\1:${{ github.event.workflow_run.head_sha }}|g" k8s/*.yaml
 
       - name: Deploy to Kubernetes
         run: |

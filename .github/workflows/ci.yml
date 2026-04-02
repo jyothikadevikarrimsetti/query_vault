@@ -57,6 +57,6 @@ jobs:
         run: |
           cd ${{ matrix.service.dir }}
           # Build with the commit SHA as the tag
-          docker build -t jimsonrats/${{ matrix.service.image }}:${{ github.sha }} .
+          docker build -t jyothikadevikarrimsetti/${{ matrix.service.image }}:${{ github.sha }} .
           # Push the image to Docker Hub
-          docker push jimsonrats/${{ matrix.service.image }}:${{ github.sha }}
+          docker push jyothikadevikarrimsetti/${{ matrix.service.image }}:${{ github.sha }}
