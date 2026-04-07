@@ -1,4 +1,4 @@
-name: CD (Continuous Deployment)
+name: CD (Deploy to Azure VM)
 
 on:
   workflow_run:
@@ -7,39 +7,51 @@ on:
       - completed
 
 jobs:
-  cd:
-    name: Continuous Deployment (Release)
+  deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    environment: dev
-    
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: SSH into VM and Deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.AZURE_VM_HOST }}
+          username: ${{ secrets.AZURE_VM_USER }}
+          key: ${{ secrets.AZURE_VM_SSH_KEY }}
+          script: |
+            set -e
 
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v3
-        
-      - name: Configure Kubeconfig
-        run: |
-          mkdir -p ~/.kube
-          echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+            APP_DIR=/home/${{ secrets.AZURE_VM_USER }}/ai_security_v2-updated
+            SHA=${{ github.event.workflow_run.head_sha }}
 
-      - name: Prepare Kubernetes Manifests
-        run: |
-          # 3. Replace 'latest' tag with the SHA built in CI across ALL deployment files
-          sed -i "s|jyothikadevikarrimsetti/\([a-zA-Z0-9-]*\):latest|jyothikadevikarrimsetti/\1:${{ github.event.workflow_run.head_sha }}|g" k8s/*.yaml
+            cd $APP_DIR
 
-      - name: Deploy to Kubernetes
-        run: |
-          kubectl apply -f k8s/namespace.yaml || true
-          kubectl apply -f k8s/configmap.yaml
-          kubectl apply -f k8s/secrets.yaml
-          
-          # Apply everything else (Deployments, Services, etc)
-          kubectl apply -f k8s/
-          
-          # Wait for essential services
-          kubectl rollout status deployment/queryvault -n xensql-queryvault
-          kubectl rollout status deployment/xensql -n xensql-queryvault
-          kubectl rollout status deployment/dashboard -n xensql-queryvault
+            echo "📥 Pull latest code..."
+            git pull origin main || echo "No updates, continuing..."
+
+            echo "🔐 Docker login..."
+            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+            echo "⬇️ Pull images..."
+            docker pull jyothika2832/ai_security_v2-queryvault:$SHA
+            docker pull jyothika2832/ai_security_v2-xensql:$SHA
+            docker pull jyothika2832/ai_security_v2-dashboard:$SHA
+
+            echo "🔄 Update compose..."
+            sed -i "s|ai_security_v2-queryvault:.*|ai_security_v2-queryvault:$SHA|g" docker-compose.yaml
+            sed -i "s|ai_security_v2-xensql:.*|ai_security_v2-xensql:$SHA|g" docker-compose.yaml
+            sed -i "s|ai_security_v2-dashboard:.*|ai_security_v2-dashboard:$SHA|g" docker-compose.yaml
+
+            echo "🚀 Deploy..."
+            docker compose up -d || docker-compose up -d
+
+            echo "🔍 Checking services..."
+            docker ps
+
+            echo "🌐 Health check..."
+            curl -f http://localhost:3000 || exit 1
+
+            echo "🧹 Cleanup..."
+            docker image prune -f
+
+            echo "✅ Deployment complete 🚀"
