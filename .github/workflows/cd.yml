@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Copy docker-compose to VM
         uses: appleboy/scp-action@v0.1.7
@@ -32,12 +34,8 @@ jobs:
           key: ${{ secrets.AZURE_VM_SSH_KEY }}
           script: |
             set -e
-
             APP_DIR=/home/${{ secrets.AZURE_VM_USER }}/ai-security-app
             SHA=${{ github.event.workflow_run.head_sha }}
-
-            # Ensure the app directory exists
-            mkdir -p $APP_DIR
             cd $APP_DIR
 
             echo "🔐 Docker login..."
@@ -54,8 +52,8 @@ jobs:
             sed -i "s|ai_security_v2-dashboard:.*|ai_security_v2-dashboard:$SHA|g" docker-compose.yaml
 
             echo "🚀 Deploy..."
-            docker compose up -d || docker-compose up -d
-
+            docker compose up -d --force-recreate || docker-compose up -d --force-recreate
+            
             echo "🔍 Checking services..."
             docker ps
 
