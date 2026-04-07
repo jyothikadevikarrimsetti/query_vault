@@ -101,9 +101,9 @@ export const DOMAIN_ICON: Record<string, React.FC<{ className?: string }>> = {
 // ── Clearance badges ─────────────────────────────────────────
 
 export const CLEARANCE_BADGE: Record<number, { label: string; color: string }> = {
-  1: { label: 'L1 Public', color: 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400' },
-  2: { label: 'L2 Internal', color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400' },
-  3: { label: 'L3 Confidential', color: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-400' },
-  4: { label: 'L4 Highly Conf.', color: 'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-400' },
-  5: { label: 'L5 Restricted', color: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400' },
+  1: { label: 'L1 Public',        color: 'bg-gray-100 text-gray-600' },
+  2: { label: 'L2 Internal',      color: 'bg-blue-50 text-blue-600' },
+  3: { label: 'L3 Restricted',    color: 'bg-yellow-50 text-yellow-700' },
+  4: { label: 'L4 Highly Conf.',  color: 'bg-blue-100 text-blue-700' },
+  5: { label: 'L5 Top Secret',    color: 'bg-red-100 text-red-700' },
 };
