@@ -12,6 +12,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Copy docker-compose to VM
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.AZURE_VM_HOST }}
+          username: ${{ secrets.AZURE_VM_USER }}
+          key: ${{ secrets.AZURE_VM_SSH_KEY }}
+          source: "docker-compose.yaml"
+          target: "/home/${{ secrets.AZURE_VM_USER }}/ai-security-app/"
+
       - name: SSH into VM and Deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -24,10 +36,9 @@ jobs:
             APP_DIR=/home/${{ secrets.AZURE_VM_USER }}/ai-security-app
             SHA=${{ github.event.workflow_run.head_sha }}
 
+            # Ensure the app directory exists
+            mkdir -p $APP_DIR
             cd $APP_DIR
-
-            echo "📥 Pull latest code..."
-            git pull origin main || echo "No updates, continuing..."
 
             echo "🔐 Docker login..."
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
