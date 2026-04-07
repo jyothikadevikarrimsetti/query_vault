@@ -21,7 +21,7 @@ jobs:
           script: |
             set -e
 
-            APP_DIR=/home/${{ secrets.AZURE_VM_USER }}/ai_security_v2-updated
+            APP_DIR=/home/${{ secrets.AZURE_VM_USER }}/ai-security-app
             SHA=${{ github.event.workflow_run.head_sha }}
 
             cd $APP_DIR
