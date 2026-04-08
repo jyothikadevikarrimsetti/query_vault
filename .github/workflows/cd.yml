@@ -59,6 +59,10 @@ jobs:
             echo "🔍 Checking services..."
             docker ps
 
+            echo "🕷️ Crawling databases..."
+            # Trigger XenSQL to index the databases
+            curl -X POST http://localhost:8900/api/v1/schema/crawl || echo "Crawl trigger failed, skipping..."
+
             echo "🌐 Health check..."
             # Try port 3002 (v3)
             curl -f http://localhost:3000 || exit 1
