@@ -61,7 +61,7 @@ jobs:
 
             echo "🌐 Health check..."
             # Try port 3002 (v3)
-            curl -f http://localhost:3002 || exit 1
+            curl -f http://localhost:3000 || exit 1
 
             echo "🧹 Cleanup..."
             docker image prune -f
