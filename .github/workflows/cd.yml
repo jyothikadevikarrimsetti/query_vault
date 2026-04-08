@@ -56,12 +56,19 @@ jobs:
             # Force using the specific file and recreate
             docker compose -f docker-compose.yml up -d --force-recreate
             
-            echo "🔍 Checking services..."
-            docker ps
+            echo "🌱 Seeding data..."
+            # Wait for DBs to be ready
+            sleep 10
+            docker exec -i target-postgres psql -U sentinelsql -d sentinelsql < scripts/seed_sample_data_postgres.sql || echo "Postgres seeding skipped..."
+            docker exec -i target-mysql mysql -u sentinelsql -p1234 sentinelsql < scripts/seed_sample_data_mysql.sql || echo "MySQL seeding skipped..."
 
             echo "🕷️ Crawling databases..."
             # Trigger XenSQL to index the databases
-            curl -X POST http://localhost:8900/api/v1/schema/crawl || echo "Crawl trigger failed, skipping..."
+            sleep 5
+            curl -X POST http://localhost:8900/api/v1/schema/crawl || echo "Crawl trigger failed..."
+            
+            echo "🔍 Checking services..."
+            docker ps
 
             echo "🌐 Health check..."
             # Try port 3002 (v3)
