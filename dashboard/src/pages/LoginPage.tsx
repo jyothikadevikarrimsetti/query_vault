@@ -140,7 +140,7 @@ export function LoginPage() {
             <ShieldCheck className="w-7 h-7 text-indigo-600" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-indigo-600 to-blue-500 bg-clip-text text-transparent pb-1">
-            Apollo Hospitals
+            Apollo Gateway V3
           </h1>
           <p className="text-sm text-indigo-500/80 font-semibold mt-1 tracking-wide uppercase">AI Query Security Demo</p>
         </div>

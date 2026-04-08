@@ -87,10 +87,10 @@ services:
 
   dashboard:
     image: jyothika2832/ai_security_v3-dashboard:latest
-    container_name: dashboard
+    container_name: dashboard_v3_final
     restart: unless-stopped
     ports:
-      - "3000:3001"
+      - "3002:3001"
     depends_on:
       - xensql
       - queryvault
