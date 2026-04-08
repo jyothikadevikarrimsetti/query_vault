@@ -60,7 +60,7 @@ services:
   # ── Application Services ───────────────────────────
 
   xensql:
-    image: jyothika2832/ai_security_v2-xensql:latest
+    image: jyothika2832/ai_security_v3-xensql:latest
     container_name: xensql
     restart: unless-stopped
     env_file: .env
@@ -73,7 +73,7 @@ services:
       - target-mysql
 
   queryvault:
-    image: jyothika2832/ai_security_v2-queryvault:latest
+    image: jyothika2832/ai_security_v3-queryvault:latest
     container_name: queryvault
     restart: unless-stopped
     env_file: .env
@@ -86,7 +86,7 @@ services:
       - target-mysql
 
   dashboard:
-    image: jyothika2832/ai_security_v2-dashboard:latest
+    image: jyothika2832/ai_security_v3-dashboard:latest
     container_name: dashboard
     restart: unless-stopped
     ports:

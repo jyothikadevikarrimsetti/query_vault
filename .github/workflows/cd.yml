@@ -42,14 +42,14 @@ jobs:
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
             echo "⬇️ Pull images..."
-            docker pull jyothika2832/ai_security_v2-queryvault:$SHA
-            docker pull jyothika2832/ai_security_v2-xensql:$SHA
-            docker pull jyothika2832/ai_security_v2-dashboard:$SHA
+            docker pull jyothika2832/ai_security_v3-queryvault:$SHA
+            docker pull jyothika2832/ai_security_v3-xensql:$SHA
+            docker pull jyothika2832/ai_security_v3-dashboard:$SHA
 
             echo "🔄 Update compose..."
-            sed -i "s|ai_security_v2-queryvault:.*|ai_security_v2-queryvault:$SHA|g" docker-compose.yaml
-            sed -i "s|ai_security_v2-xensql:.*|ai_security_v2-xensql:$SHA|g" docker-compose.yaml
-            sed -i "s|ai_security_v2-dashboard:.*|ai_security_v2-dashboard:$SHA|g" docker-compose.yaml
+            sed -i "s|ai_security_v3-queryvault:.*|ai_security_v3-queryvault:$SHA|g" docker-compose.yaml
+            sed -i "s|ai_security_v3-xensql:.*|ai_security_v3-xensql:$SHA|g" docker-compose.yaml
+            sed -i "s|ai_security_v3-dashboard:.*|ai_security_v3-dashboard:$SHA|g" docker-compose.yaml
 
             echo "🚀 Deploy..."
             docker compose up -d --force-recreate || docker-compose up -d --force-recreate

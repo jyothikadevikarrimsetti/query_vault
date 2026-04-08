@@ -14,9 +14,9 @@ jobs:
       fail-fast: false
       matrix:
         service:
-          - { dir: "queryvault", image: "ai_security_v2-queryvault" }
-          - { dir: "xensql", image: "ai_security_v2-xensql" }
-          - { dir: "dashboard", image: "ai_security_v2-dashboard" }
+          - { dir: "queryvault", image: "ai_security_v3-queryvault" }
+          - { dir: "xensql", image: "ai_security_v3-xensql" }
+          - { dir: "dashboard", image: "ai_security_v3-dashboard" }
 
     steps:
       - name: Checkout repository
