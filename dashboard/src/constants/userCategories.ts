@@ -100,6 +100,7 @@ export const DOMAIN_ICON: Record<string, React.FC<{ className?: string }>> = {
 
 // ── Clearance badges ─────────────────────────────────────────
 
+
 export const CLEARANCE_BADGE: Record<number, { label: string; color: string }> = {
   1: { label: 'L1 Public',        color: 'bg-gray-100 text-gray-600' },
   2: { label: 'L2 Internal',      color: 'bg-blue-50 text-blue-600' },
@@ -107,3 +108,5 @@ export const CLEARANCE_BADGE: Record<number, { label: string; color: string }> =
   4: { label: 'L4 Highly Conf.',  color: 'bg-blue-100 text-blue-700' },
   5: { label: 'L5 Top Secret',    color: 'bg-red-100 text-red-700' },
 };
+
+//changes
