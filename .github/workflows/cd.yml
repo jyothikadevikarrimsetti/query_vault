@@ -23,7 +23,7 @@ jobs:
           host: ${{ secrets.AZURE_VM_HOST }}
           username: ${{ secrets.AZURE_VM_USER }}
           key: ${{ secrets.AZURE_VM_SSH_KEY }}
-          source: "docker-compose.yaml"
+          source: "docker-compose.yml"
           target: "/home/${{ secrets.AZURE_VM_USER }}/ai-security-app/"
 
       - name: SSH into VM and Deploy
@@ -47,17 +47,20 @@ jobs:
             docker pull jyothika2832/ai_security_v3-dashboard:$SHA
 
             echo "🔄 Update compose..."
-            sed -i "s|ai_security_v3-queryvault:.*|ai_security_v3-queryvault:$SHA|g" docker-compose.yaml
-            sed -i "s|ai_security_v3-xensql:.*|ai_security_v3-xensql:$SHA|g" docker-compose.yaml
-            sed -i "s|ai_security_v3-dashboard:.*|ai_security_v3-dashboard:$SHA|g" docker-compose.yaml
+            # Update the image tags in the yml file
+            sed -i "s|ai_security_v3-queryvault:.*|ai_security_v3-queryvault:$SHA|g" docker-compose.yml
+            sed -i "s|ai_security_v3-xensql:.*|ai_security_v3-xensql:$SHA|g" docker-compose.yml
+            sed -i "s|ai_security_v3-dashboard:.*|ai_security_v3-dashboard:$SHA|g" docker-compose.yml
 
             echo "🚀 Deploy..."
-            docker compose up -d --force-recreate || docker-compose up -d --force-recreate
+            # Force using the specific file and recreate
+            docker compose -f docker-compose.yml up -d --force-recreate
             
             echo "🔍 Checking services..."
             docker ps
 
             echo "🌐 Health check..."
+            # Try port 3002 (v3)
             curl -f http://localhost:3002 || exit 1
 
             echo "🧹 Cleanup..."
