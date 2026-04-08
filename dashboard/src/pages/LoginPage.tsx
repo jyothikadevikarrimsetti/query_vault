@@ -203,14 +203,14 @@ export function LoginPage() {
                   </button>
 
                   {dropdownOpen && (
-                    <div className="absolute z-50 w-full mt-2 bg-[#040f1e] border border-[#0a2a4a] rounded-xl shadow-2xl overflow-hidden max-h-72 overflow-y-auto ring-1 ring-black/50">
+                    <div className="absolute z-50 w-full mt-2 rounded-xl shadow-2xl overflow-hidden max-h-72 overflow-y-auto ring-1 ring-black" style={{background:'#040f1e', border:'1px solid #0a2a4a'}}>
                       {Object.entries(grouped).map(([domain, domainRoles]) => {
                         const Icon = DOMAIN_ICON[domain] ?? Users;
                         const textColor = DOMAIN_GROUP_TEXT_COLORS[domain] ?? 'text-gray-400';
                         const domainLabel = DOMAIN_GROUP_LABELS[domain] ?? domain;
                         return (
                           <div key={domain}>
-                            <div className="flex items-center gap-1.5 px-4 py-2 bg-[#020B18] border-b border-[#0a2a4a] sticky top-0">
+                            <div className="flex items-center gap-1.5 px-4 py-2 border-b border-[#0a2a4a] sticky top-0 z-10" style={{background:'#020B18'}}>
                               <Icon className={`w-3 h-3 ${textColor}`} />
                               <span className={`text-[10px] font-bold uppercase tracking-widest ${textColor}`}>
                                 {domainLabel}
