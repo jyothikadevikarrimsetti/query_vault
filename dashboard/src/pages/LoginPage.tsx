@@ -68,7 +68,7 @@ export function LoginPage() {
     return (
       (r.domain === 'CLINICAL' && name === 'ATTENDING_PHYSICIAN') ||
       (r.domain === 'FINANCIAL' && name === 'BILLING_CLERK') ||
-      (r.domain === 'HR' && name === 'HR_MANAGER')
+      (r.domain === 'HR' && (name === 'HR_MANAGER' || name === 'HR_DIRECTOR'))
     );
   });
 
